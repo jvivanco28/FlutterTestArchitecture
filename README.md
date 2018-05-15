@@ -1,6 +1,6 @@
 # test_bloc
 
-A new Flutter application.
+Toying around with Flutter to see how I can architect my apps.
 
 ## Getting Started
 

@@ -11,12 +11,19 @@ dependencies:
 
   # Rx 
   rxdart: ^0.16.0+2
-  # http
+  # Http
   http: "^0.11.3+16"
+  # Json Serialization
+  json_annotation: ^0.2.3
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  # Json Serialization
+  build_runner: ^0.8.0
+  json_serializable: ^0.5.0
 
 
 # For information on the generic Dart part of this file, see the

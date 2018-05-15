@@ -4,13 +4,13 @@ import 'package:test_bloc/data/business_logic/data_bloc.dart';
 // This "widget" simply contains our biz logic.
 class DataProvider extends InheritedWidget {
 
-  final DataBloc dataBloc;
+  final ApplicationBloc dataBloc;
 
   DataProvider({
     Key key,
-    DataBloc dataBloc,
+    ApplicationBloc dataBloc,
     Widget child,
-  })  : dataBloc = dataBloc ?? DataBloc(),
+  })  : dataBloc = dataBloc ?? ApplicationBloc(),
         super(key: key, child: child) {
 
     debugPrint("CREATE DATA PROVIDER");
@@ -19,7 +19,7 @@ class DataProvider extends InheritedWidget {
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
 
-  static DataBloc of(BuildContext context) {
+  static ApplicationBloc of(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(DataProvider)
             as DataProvider)
         .dataBloc;

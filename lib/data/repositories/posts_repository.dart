@@ -11,7 +11,7 @@ class PostsRepository {
 
   Future<Post> fetchPost(int id) async {
 
-    debugPrint("fetching post");
+    debugPrint("fetching post $id");
 
     final response = await http.get('https://jsonplaceholder.typicode.com/posts/$id');
 //    final response = await http.get('https://jsonplaceholder.typicode.com/postsss/$id');
@@ -27,4 +27,16 @@ class PostsRepository {
     }
     return new Post.fromJson(responseJson);
   }
+
+//  Future<List<Post>> fetchPosts() async {
+//
+//    debugPrint("fetching posts");
+//
+//    final response = await http.get('https://jsonplaceholder.typicode.com/posts');
+//    final responseJson = json.decode(response.body);
+//
+//    if ( response.statusCode != HttpStatus.OK ) {
+//      throw RestApiException(ErrorModel.fromJson(responseJson));
+//    }
+//  }
 }

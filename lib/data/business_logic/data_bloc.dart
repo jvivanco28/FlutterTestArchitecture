@@ -2,46 +2,59 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:rxdart/subjects.dart';
-import 'package:test_bloc/data/models/data_model.dart';
 import 'package:test_bloc/data/repositories/posts_repository.dart';
 import 'package:test_bloc/data/rest/exceptions/api_exceptions.dart';
+import 'package:test_bloc/data/state/app_state.dart';
 
-class DataBloc {
+// I think we should have a BLOC class for every screen (similar to presenter)
+// and one App-level BLOC which just contains all other BLOCs.
+class ApplicationBloc {
   final PostsRepository _postsRepository = new PostsRepository();
 
   // Input Streams
-  final StreamController<IncrementCounter> _counterStreamController =
-      StreamController<IncrementCounter>();
+  final StreamController<IncrementCounterModel> _counterStreamController =
+      StreamController<IncrementCounterModel>();
 
   // Output Streams (FYI: generic values should be view models)
-  final BehaviorSubject<int> _counterRelay = BehaviorSubject<int>(seedValue: 0);
-  final BehaviorSubject<String> _updatedByRelay =
-      BehaviorSubject<String>(seedValue: "Nobody");
+  final BehaviorSubject<IncrementCounterModel> _counterIncrementRelay =
+      BehaviorSubject<IncrementCounterModel>();
+
+  final BehaviorSubject<MainScreenTab> _tabSelectionRelay =
+      BehaviorSubject<MainScreenTab>();
 
   final PublishSubject<String> _snackbarMsgRelay = PublishSubject<String>();
 
-  DataModel _dataModel;
+  // This is our "state" object
+  AppState _state;
 
-  DataBloc() {
+  ApplicationBloc() {
     // Initial State
-    this._dataModel = DataModel();
+    this._state = AppState();
 
     // Listen to input streams
     _counterStreamController.stream.listen((incrementCounterEvent) =>
         _handleCounterIncrement(incrementCounterEvent));
+
+    _pushAllStates();
   }
 
-  _handleCounterIncrement(IncrementCounter incrementCounterEvent) {
+  _pushAllStates() {
+    this
+        ._counterIncrementRelay
+        .add(IncrementCounterModel(_state.name, _state.count));
+    this._tabSelectionRelay.add(_state.selectedTab);
+  }
+
+  _handleCounterIncrement(IncrementCounterModel incrementCounterEvent) {
     // Increment counter and post event
-    _dataModel.count++;
-    _counterRelay.add(_dataModel.count);
+    _state.count++;
 
     // Update name only if it's different (post event if it is).
-    if (_dataModel.name != incrementCounterEvent._updatedBy) {
-      _dataModel.name = incrementCounterEvent._updatedBy;
-      _updatedByRelay.add(_dataModel.name);
+    if (_state.name != incrementCounterEvent.updatedBy) {
+      _state.name = incrementCounterEvent.updatedBy;
     }
-    debugPrint("counter stream event! $_dataModel");
+    _counterIncrementRelay
+        .add(IncrementCounterModel(_state.name, _state.count));
 
     // Maybe this action would invoke a RESTful request...
     _postsRepository
@@ -67,35 +80,36 @@ class DataBloc {
     }
   }
 
-  StreamController<IncrementCounter> get counterStreamController =>
+  // Handle incoming app state changes the Rx way
+  StreamController<IncrementCounterModel> get counterStreamController =>
       _counterStreamController;
 
-  BehaviorSubject<int> get counterRelay => _counterRelay;
+  // Or handle them the regular ol' functional way.
+  void updateActiveTab(MainScreenTab tab) {
+    _state.selectedTab = tab;
+    _tabSelectionRelay.add(_state.selectedTab);
+  }
 
-  BehaviorSubject<String> get updatedByRelay => _updatedByRelay;
+  BehaviorSubject<IncrementCounterModel> get counterIncrementRelay =>
+      _counterIncrementRelay;
+
+  BehaviorSubject<MainScreenTab> get tabSelectionRelay => _tabSelectionRelay;
 
   PublishSubject<String> get snackbarMsgRelay => _snackbarMsgRelay;
 
   dispose() {
     _counterStreamController.close();
-    _counterRelay.close();
-    _updatedByRelay.close();
+    _tabSelectionRelay.close();
+    _snackbarMsgRelay.close();
   }
 }
 
-class IncrementCounter {
-  final String _updatedBy;
-  final int _count;
+class IncrementCounterModel {
+  final String updatedBy;
+  final int count;
 
   // Always increment by 1
-  IncrementCounter(this._updatedBy, [this._count = 1]);
+  IncrementCounterModel(this.updatedBy, [this.count = 1]);
 
-  String get updatedBy => _updatedBy;
-
-  int get count => _count;
-
-  @override
-  String toString() {
-    return 'IncrementCounter{_updatedBy: $_updatedBy, _count: $_count}';
-  }
+  factory IncrementCounterModel.initial() => IncrementCounterModel("", 0);
 }
