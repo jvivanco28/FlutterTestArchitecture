@@ -9,3 +9,5 @@ build/
 .flutter-plugins
 
 .idea/
+
+lib/data/rest/models/*.g.dart
