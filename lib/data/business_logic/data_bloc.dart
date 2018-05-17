@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:test_bloc/data/repositories/posts_repository.dart';
 import 'package:test_bloc/data/rest/exceptions/api_exceptions.dart';
+import 'package:test_bloc/data/rest/models/post_model.dart';
 import 'package:test_bloc/data/state/app_state.dart';
 
 // I think we should have a BLOC class for every screen (similar to presenter)
@@ -21,6 +22,9 @@ class ApplicationBloc {
 
   final BehaviorSubject<MainScreenTab> _tabSelectionRelay =
       BehaviorSubject<MainScreenTab>();
+
+  final BehaviorSubject<List<Post>> _postListRelay =
+      BehaviorSubject<List<Post>>();
 
   final PublishSubject<String> _snackbarMsgRelay = PublishSubject<String>();
 
@@ -43,6 +47,7 @@ class ApplicationBloc {
         ._counterIncrementRelay
         .add(IncrementCounterModel(_state.name, _state.count));
     this._tabSelectionRelay.add(_state.selectedTab);
+    this._postListRelay.add(_state.posts);
   }
 
   _handleCounterIncrement(IncrementCounterModel incrementCounterEvent) {
@@ -56,12 +61,18 @@ class ApplicationBloc {
     _counterIncrementRelay
         .add(IncrementCounterModel(_state.name, _state.count));
 
-    // Maybe this action would invoke a RESTful request...
-    _postsRepository
-        .fetchPost(1)
-//        .then(_derp)
-        .then((post) => _snackbarMsgRelay.add(post.title))
-        .catchError(_onError);
+//    _postsRepository
+//        .fetchPost(1)
+////        .then(_derp)
+//        .then((post) => _snackbarMsgRelay.add(post.title))
+//        .catchError(_onError);
+
+    _postsRepository.fetchPosts().then((postList) {
+      _state.posts = postList;
+
+      _postListRelay.add(_state.posts);
+      _snackbarMsgRelay.add("Fetched posts.");
+    }).catchError(_onError);
   }
 
 //  _derp(Post post) {
@@ -95,12 +106,15 @@ class ApplicationBloc {
 
   BehaviorSubject<MainScreenTab> get tabSelectionRelay => _tabSelectionRelay;
 
+  BehaviorSubject<List<Post>> get postListRelay => _postListRelay;
+
   PublishSubject<String> get snackbarMsgRelay => _snackbarMsgRelay;
 
   dispose() {
     _counterStreamController.close();
     _tabSelectionRelay.close();
     _snackbarMsgRelay.close();
+    _postListRelay.close();
   }
 }
 

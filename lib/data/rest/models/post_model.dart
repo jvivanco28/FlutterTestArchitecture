@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:rxdart/rxdart.dart';
 
 /// This allows our `Post` class to access private members in
 /// the generated file. The value for this is *.g.dart, where
@@ -43,4 +44,10 @@ class Post extends Object with _$PostSerializerMixin {
   /// from a map. We pass the map to the generated _$PostModelFromJson constructor.
   /// The constructor is named after the source class, in this case PostModel.
   factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);
+
+  // TODO I don't know if this is the best way of handling this... It seems shitty
+  static List<Post> fromJsonList(List<dynamic> json) {
+    return json.map((singlePostJson) => Post.fromJson(singlePostJson))
+            .toList();
+  }
 }

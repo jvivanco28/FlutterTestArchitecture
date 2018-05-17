@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_bloc/data/business_logic/data_bloc.dart';
-import 'package:test_bloc/ui/data_provider_widget.dart';
+import 'package:test_bloc/ui/widgets/data_provider_widget.dart';
 
 class ButtonCountTabContent extends StatelessWidget {
 
