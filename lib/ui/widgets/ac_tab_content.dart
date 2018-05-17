@@ -7,11 +7,16 @@ import 'package:test_bloc/ui/widgets/data_provider_widget.dart';
 class AirConditionerTabContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    ApplicationBloc bloc = DataProvider.of(context);
+    debugPrint("Called AirConditionerTabContent Build");
+
+    ApplicationBloc bloc = DataProviderWidget.of(context);
 
     return new StreamBuilder<List<Post>>(
         stream: bloc.postListRelay,
         builder: (context, snapshot) {
+
+          debugPrint("Called AirConditionerTabContent.streambuilder Build");
+
           return ListView(children: _getListWidgets(snapshot.data, bloc));
         });
   }
@@ -31,12 +36,15 @@ class AirConditionerTabContent extends StatelessWidget {
 //            padding: new EdgeInsets.all(10.0),
 //            child: new Text("${post.title}")),
 
-      ListTile(
-          leading: Icon(Icons.flight_land),
-          title: Text("${post.id} ${post.title}"),
-          subtitle: Text("${post.body}"),
-          isThreeLine: true,
-          onTap: () {
-            bloc.snackbarMsgRelay.add("tapped on ID ${post.id}");
-          });
+      new Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListTile(
+            leading: Icon(Icons.flight_land),
+            title: Text("${post.id} ${post.title}"),
+            subtitle: Text("${post.body}"),
+            isThreeLine: true,
+            onTap: () {
+              bloc.snackbarMsgRelay.add("tapped on ID ${post.id}");
+            }),
+      );
 }

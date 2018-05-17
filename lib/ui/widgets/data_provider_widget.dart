@@ -2,11 +2,11 @@ import 'package:flutter/widgets.dart';
 import 'package:test_bloc/data/business_logic/data_bloc.dart';
 
 // This "widget" simply contains our biz logic.
-class DataProvider extends InheritedWidget {
+class DataProviderWidget extends InheritedWidget {
 
   final ApplicationBloc dataBloc;
 
-  DataProvider({
+  DataProviderWidget({
     Key key,
     ApplicationBloc dataBloc,
     Widget child,
@@ -17,11 +17,14 @@ class DataProvider extends InheritedWidget {
   } //  DataProviderWidget({
 
   @override
-  bool updateShouldNotify(InheritedWidget oldWidget) => true;
+  bool updateShouldNotify(InheritedWidget oldWidget) {
+    // TODO ALTER THIS!
+    return true;
+  }
 
   static ApplicationBloc of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(DataProvider)
-            as DataProvider)
+    return (context.inheritFromWidgetOfExactType(DataProviderWidget)
+            as DataProviderWidget)
         .dataBloc;
   }
 }

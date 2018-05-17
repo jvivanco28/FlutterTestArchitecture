@@ -6,7 +6,9 @@ class ButtonCountTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ApplicationBloc dataBloc = DataProvider.of(context);
+    debugPrint("Called ButtonCountTabContent Build");
+
+    ApplicationBloc dataBloc = DataProviderWidget.of(context);
 
     return StreamBuilder<IncrementCounterModel>(
       // This seems kinda shitty that we need to do this but oh well. The
@@ -14,6 +16,9 @@ class ButtonCountTabContent extends StatelessWidget {
       initialData: IncrementCounterModel.initial(),
       stream: dataBloc.counterIncrementRelay,
       builder: (context, snapshot) {
+
+        debugPrint("Called ButtonCountTabContent.streambuilder Build");
+
         return Center(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             Text(

@@ -34,7 +34,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ApplicationBloc dataBloc = DataProvider.of(context);
+    ApplicationBloc dataBloc = DataProviderWidget.of(context);
+    debugPrint("Called HomePage Build");
 
     return new StreamBuilder<MainScreenTab>(
       // Initial data until event gets pushed.

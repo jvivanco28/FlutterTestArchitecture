@@ -32,7 +32,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
 
     // Dispose of biz logic on app dispose.
-    final ApplicationBloc dataBloc = DataProvider.of(context);
+    final ApplicationBloc dataBloc = DataProviderWidget.of(context);
 
     // "Call dispose if dataBloc is not null".
     dataBloc?.dispose();
@@ -60,11 +60,13 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("Called MyAppState Build");
+
     const title = "Test Streams";
 
     _homePage = HomePage(title);
 
-    final DataProvider widget = new DataProvider(
+    final DataProviderWidget widget = new DataProviderWidget(
       child:
           MaterialApp(theme: ThemeData.dark(), title: title, home: _homePage),
     );
